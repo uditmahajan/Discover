@@ -1,0 +1,110 @@
+<!doctype html>
+<html>
+	<head>
+		<title>OSCILLATION 1</title>
+		<style>
+		body {
+				background-color: #ffffff;
+				margin: 0px;
+				overflow: hidden;
+				padding: 0px;
+			}
+		canvas {
+				margin: 0px;
+				padding: 0px;
+		}	
+		</style>
+
+		<script src="volume-meter.js"></script>
+		<script src="main.js"></script>
+		<script src="http://brangerbriz.net/labs/threejs_playGnd/js/three.min.js"></script>
+		<script src="http://brangerbriz.net/labs/threejs_playGnd/js/Detector.js"></script>
+
+	</head>
+	<body>
+
+		<canvas id="meter" width="0" height="0">
+
+			<script>
+
+				if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+			
+			var camera, scene, renderer;
+			var geometry, material, mesh;
+
+			function setup() {
+
+				var W = window.innerWidth, H = window.innerHeight;
+				renderer = new THREE.WebGLRenderer();
+				renderer.setSize( W, H );
+				document.body.appendChild( renderer.domElement );
+
+				camera = new THREE.PerspectiveCamera( 50, W/H, 1, 10000 );
+				camera.position.z = 500;
+
+				scene = new THREE.Scene();
+				
+				geometry = new THREE.TetrahedronGeometry(150, 0);
+				material = new THREE.MeshLambertMaterial({shading: THREE.SmoothShading, color: 0xdcdcdc});
+				
+				geometry2 = new THREE.SphereGeometry(200, 50, 50);
+				material2 = new THREE.MeshLambertMaterial({shading: THREE.SmoothShading, color: 0xdcdcdc});
+
+
+				for ( var i = 0; i < 300; i ++ ) {
+				mesh = new THREE.Mesh(geometry, material);
+				mesh.scale.x = mesh.scale.y = mesh.scale.z = Math.random()*0.5;
+				mesh.position.y = (Math.random()-0.5)*5000;
+				mesh.position.x = (Math.random()-0.5)*5000;
+				mesh.position.z = (Math.random()-0.5)*5000;
+					
+
+				scene.add(mesh);
+				
+				mesh2 = new THREE.Mesh(geometry2, material2);
+				mesh2.scale.x = mesh2.scale.y = mesh2.scale.z = Math.random()*0.25;
+				mesh2.position.y = (Math.random()-0.5)*5000;
+				mesh2.position.x = (Math.random()-0.5)*5000;
+				mesh2.position.z = (Math.random()-0.5)*5000;
+
+				scene.add(mesh2);
+				}
+
+				
+
+
+			}
+
+			function draw() {
+
+				requestAnimationFrame( draw );
+				
+				if (volume>0.15) {
+				camera.rotation.x = Date.now() * 0.005 + 100 * volume;	
+				camera.rotation.y = Date.now() * 0.002 + 100 * volume;	
+				camera.rotation.z = Date.now() * 0.0001 + 100 * volume;
+				
+				camera.position.z = Math.sin( Date.now() * 0.002 ) * 500;
+				camera.position.y = Math.sin( Date.now() * 0.002 ) * 500;
+				} else{
+
+				camera.rotation.x = Date.now() * 0.005;	
+				camera.rotation.y = Date.now() * 0.002;	
+				camera.rotation.z = Date.now() * 0.0001;
+				
+				camera.position.z = Math.sin( Date.now() * 0.002 ) * 500;
+				camera.position.y = Math.sin( Date.now() * 0.002 ) * 500;
+				};
+				renderer.render( scene, camera );
+
+			}
+
+			setup();
+			draw();
+
+			</script>
+			</canvas>
+
+</pre> -->
+	</body>
+</html>

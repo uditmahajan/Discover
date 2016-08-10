@@ -1,0 +1,115 @@
+<!doctype html>
+<html>
+	<head>
+		<title>OVERVIEW</title>
+		<style>
+		body {
+				background-color: #ffffff;
+				margin: 0px;
+				overflow: hidden;
+				padding: 0px;
+			}
+		canvas {
+				margin: 0px;
+				padding: 0px;
+		}	
+		</style>
+
+		<script src="volume-meter.js"></script>
+		<script src="main.js"></script>
+		<script src="http://brangerbriz.net/labs/threejs_playGnd/js/three.min.js"></script>
+		<script src="http://brangerbriz.net/labs/threejs_playGnd/js/Detector.js"></script>
+
+	</head>
+	<body>
+
+		<canvas id="meter" width="0" height="0">
+
+				<script>
+
+			if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+			
+			var camera, scene, renderer;
+			var geometry, material, mesh;
+			var xPos, yPos, zPos;
+
+			function setup() {
+
+				var W = window.innerWidth, H = window.innerHeight;
+				renderer = new THREE.WebGLRenderer();
+				renderer.setSize( W, H );
+				document.body.appendChild( renderer.domElement );
+
+				camera = new THREE.PerspectiveCamera( 50, W/H, 1, 10000 );
+				camera.position.z = 500;
+
+				scene = new THREE.Scene();
+				
+				
+				geometry = new THREE.TorusKnotGeometry(1, 40, 64, 8, 2, 3, 1);
+				material = new THREE.MeshLambertMaterial({shading: THREE.FlatShading, color: 0xdcdcdc, wireframe: true, wireframeLinewidth: 1});
+				mesh0 = new THREE.Mesh(geometry, material);
+				mesh0.scale.x = mesh0.scale.y = mesh0.scale.z = 0.94 + Math.random()*2;
+				scene.add(mesh0);
+				
+				for ( var i = 0; i < 300; i ++ ) {
+					
+					mesh = new THREE.Mesh(geometry, material);
+					mesh.scale.x = mesh.scale.y = mesh.scale.z = 0.05;
+					mesh.position.y = (Math.random()-0.5)*1000;
+					mesh.position.x = (Math.random()-0.5)*1000;
+					mesh.position.z = (Math.random()-0.5)*1000;
+					mesh.position.x = Math.random() * 1000 - 500;
+					mesh.position.y = Math.random() * 1000 - 500;
+					mesh.position.z = Math.random() * 1000 - 500;
+					mesh.rotation.x = Math.random() * 2 * Math.PI;
+					mesh.rotation.y = Math.random() * 2 * Math.PI;
+					mesh.rotation.z = Math.random() * 2 * Math.PI;
+				scene.add(mesh);
+				}
+				
+
+
+			}
+
+			function draw() {
+
+				requestAnimationFrame( draw );
+
+				xPos = mesh0.scale.x;
+				yPos = mesh0.scale.y;
+				zPos = mesh0.scale.z;
+				
+				if (volume>0.15) {
+					mesh0.scale.x = 10 * volume;
+					mesh0.scale.y = 10 * volume;
+					mesh0.scale.z = 10 * volume;
+
+					mesh0.rotation.x = Date.now() * 0.05 + 100 * volume;	
+					mesh0.rotation.y = Date.now() * 0.002 + 100 * volume;	
+					mesh0.rotation.z = Date.now() * 0.001 + 100 * volume;
+				} else{
+
+				mesh0.scale.x = xPos;
+				mesh0.scale.y = yPos;
+				mesh0.scale.z = zPos;
+
+				mesh0.rotation.x = Date.now() * 0.05;	
+				mesh0.rotation.y = Date.now() * 0.002;	
+				mesh0.rotation.z = Date.now() * 0.001;
+				
+				camera.position.x = Math.sin( Date.now() * 0.0002 ) * 50;
+				camera.position.y = Math.sin( Date.now() * 0.0002 ) * 10;
+				
+				};
+
+				renderer.render( scene, camera );
+			}
+
+			setup();
+			draw();
+			</script>
+			</canvas>
+
+	</body>
+</html>

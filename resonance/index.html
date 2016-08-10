@@ -1,0 +1,105 @@
+<!doctype html>
+<html>
+	<head>
+		<title>RESONANCE</title>
+		<style>
+		body {
+				background-color: #ffffff;
+				margin: 0px;
+				overflow: hidden;
+				padding: 0px;
+			}
+		canvas {
+				margin: 0px;
+				padding: 0px;
+		}	
+		</style>
+
+		<script src="volume-meter.js"></script>
+		<script src="main.js"></script>
+		<script src="http://brangerbriz.net/labs/threejs_playGnd/js/three.min.js"></script>
+		<script src="http://brangerbriz.net/labs/threejs_playGnd/js/Detector.js"></script>
+
+	</head>
+	<body>
+
+		<canvas id="meter" width="0" height="0">
+
+				<script>
+
+			 if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+            
+            var camera, scene, renderer;
+            var geometry, material, mesh;
+
+            function setup() {
+
+                var W = window.innerWidth, H = window.innerHeight;
+                renderer = new THREE.WebGLRenderer();
+                renderer.setSize( W, H );
+                document.body.appendChild( renderer.domElement );
+
+                camera = new THREE.PerspectiveCamera( 50, W/H, 1, 10000 );
+                camera.position.z = 500;
+
+                scene = new THREE.Scene();
+                
+                
+                geometry = new THREE.TorusKnotGeometry(1, 40, 64, 8, 2, 3, 1);
+                material = new THREE.MeshLambertMaterial({shading: THREE.FlatShading, color: 0xdcdcdc, wireframe: true, wireframeLinewidth: 1});
+                
+                for ( var i = 0; i < geometry.vertices.length; i ++ ) {
+                    var vertices = [];
+                    for ( var v = 0; v < geometry.vertices.length; v ++ ) {
+                        vertices.push( geometry.vertices[ v ].clone() );
+                        if ( v === i ) {
+                            vertices[ vertices.length - 1 ].x *= 2;
+                            vertices[ vertices.length - 1 ].y *= 2;
+                            vertices[ vertices.length - 1 ].z *= 2;
+                        }
+                    }
+                    geometry.morphTargets.push( { name: "target" + i, vertices: vertices } );
+                }
+                
+mesh = new THREE.Mesh(geometry, material);
+mesh.scale.x = mesh.scale.y = mesh.scale.z = Math.sin( Date.now() * 0.002 ) * 50;
+                
+                mesh.material.morphTargets = true;
+                
+scene.add(mesh);
+
+
+            }
+
+            function draw() {
+
+                requestAnimationFrame( draw );
+                
+                if (volume>0.15) {
+                	for(var v = 0; v < mesh.geometry.vertices.length; v ++ ){
+                    mesh.morphTargetInfluences[ v ] = Math.random();
+                }
+                mesh.rotation.x = Date.now() * 0.0005 + 100 * volume;  
+                mesh.rotation.y = Date.now() * 0.0002 + 100 * volume;  
+                mesh.rotation.z = Date.now() * 0.001 + 200 * volume;
+                
+                } else{
+                	for(var v = 0; v < mesh.geometry.vertices.length; v ++ ){
+                    mesh.morphTargetInfluences[ v ] = Math.random();
+                }
+                mesh.rotation.x = Date.now() * 0.0005;  
+                mesh.rotation.y = Date.now() * 0.0002;  
+                mesh.rotation.z = Date.now() * 0.001;
+                
+                };
+                
+                renderer.render( scene, camera );
+
+            }
+
+            setup();
+            draw();
+			</script>
+			</canvas>
+	</body>
+</html>

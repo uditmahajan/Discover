@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+	<head>
+		<title>RAW</title>
+		<style>
+		body {
+				background-color: #ffffff;
+				margin: 0px;
+				overflow: hidden;
+				padding: 0px;
+			}
+		canvas {
+				margin: 0px;
+				padding: 0px;
+		}	
+		</style>
+		
+		<script src="volume-meter.js"></script>
+		<script src="main.js"></script>
+		<script src="http://brangerbriz.net/labs/threejs_playGnd/js/three.min.js"></script>
+		<script src="http://brangerbriz.net/labs/threejs_playGnd/js/Detector.js"></script>
+
+	</head>
+	<body>
+
+		<canvas id="meter" width="0" height="0">
+
+			<script>
+
+				if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+			
+			var camera, scene, renderer;
+			var geometry, material, mesh;
+
+			function setup() {
+
+				var W = window.innerWidth, H = window.innerHeight;
+				renderer = new THREE.WebGLRenderer();
+				renderer.setSize( W, H );
+				document.body.appendChild( renderer.domElement );
+
+				camera = new THREE.PerspectiveCamera( 50, W/H, 1, 10000 );
+				camera.position.z = 500;
+
+				scene = new THREE.Scene();
+				
+				geometry = new THREE.PlaneGeometry(30, 400, 4, 4);
+				material = new THREE.MeshLambertMaterial({shading: THREE.SmoothShading, color: 0xdcdcdc});
+				for ( var i = 0; i < 6000; i ++ ) {
+					mesh = new THREE.Mesh(geometry, material);
+					mesh.scale.x = mesh.scale.y = mesh.scale.z = 0.1;
+					mesh.position.x = Math.random()*1000 - 500;
+					mesh.position.y = Math.random()*1000 - 500;
+					mesh.position.z = Math.random()*1000 - 500;
+					scene.add(mesh);
+				}
+
+
+			}
+
+			function draw() {
+
+				requestAnimationFrame( draw );
+
+				if (volume>0.15) {
+				camera.position.z = Math.sin( Date.now() * 0.0002 ) * 300 + 200 * volume;
+				camera.position.y = Math.sin( Date.now() * 0.0002 ) * 100 + 200 * volume;
+				//camera.lookAt(mesh.position);
+				camera.position.x = Math.sin( Date.now() * 0.002 ) * 500 + 200 * volume;
+				} else{
+					
+				camera.position.z = Math.sin( Date.now() * 0.002 ) * 300;
+				camera.position.y = Math.sin( Date.now() * 0.002 ) * 100;
+				camera.position.x = Math.sin( Date.now() * 0.002 ) * 300;
+				//camera.lookAt(mesh.position);
+				camera.position.x = Math.sin( Date.now() * 0.02 ) * 500;
+				renderer.render( scene, camera );
+				};
+
+			}
+
+			setup();
+			draw();
+
+			</script>
+			</canvas>
+
+	</body>
+</html>
